@@ -1,5 +1,6 @@
 // Find the elf carrying the most calories =)
 import * as fs from 'fs'
+
 const values: number[] = fs
   .readFileSync('input1.txt', { encoding: 'utf-8' })
   .split('\n\n')
