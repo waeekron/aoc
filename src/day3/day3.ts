@@ -27,32 +27,36 @@ const alphabet = [
   "Y",
   "Z",
 ]
+const lines = fs.readFileSync("input3.txt", "utf-8").split("\n")
+const prioritySum = lines
+  .map((row) => ({
+    left: row.slice(0, row.length / 2),
+    right: row.slice(row.length / 2),
+  }))
+  .map((obj) => {
+    const { left, right } = obj
+    for (const char of left) {
+      if (right.includes(char)) return char
+    }
+  })
+  .map(charToPriority)
+  .reduce((acc, curr) => acc + curr, 0)
+
+console.log("Part1:" + prioritySum)
 
 let values = new Array<string[][]>()
-values = fs
-  .readFileSync("input3.txt", "utf-8")
-  .split("\n")
+values = lines
   .map((row) => row.split(""))
   .map((row) => [row.slice(0, row.length / 2), row.slice(row.length / 2)])
 
-function charToPriority(char: string): number {
+function charToPriority(char: string | undefined): number {
+  if (!char) return 0
   let priority = alphabet.findIndex((el) => el === char.toUpperCase()) + 1
   if (char === char.toUpperCase()) {
     priority += 26
   }
   return priority
 }
-
-const part1 = values.map((row) => {
-  const [left, right] = row
-  //find the element that is in both left & right
-  for (const c of left) {
-    if (right.some((c2) => c === c2)) {
-      return c
-    }
-  }
-  return ""
-})
 
 const part2 = values.map((row) => [...row[0], ...row[1]])
 const elfGroup: string[][][] = []
@@ -69,8 +73,8 @@ const badges = elfGroup.map((row) => {
       return c1
     }
   }
-  return ""
 })
 
-console.log(part1.map(charToPriority).reduce((acc, curr) => acc + curr, 0))
-console.log(badges.map(charToPriority).reduce((acc, curr) => acc + curr, 0))
+console.log(
+  "Part2:" + badges.map(charToPriority).reduce((acc, curr) => acc + curr, 0)
+)
