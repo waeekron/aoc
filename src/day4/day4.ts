@@ -20,25 +20,10 @@ const isContained = (pair: [number[], number[]]): boolean => {
 }
 
 const isOverlap = (pair: [number[], number[]]): boolean => {
-  let [left, right] = pair
-  left = fill(left)
-  right = fill(right)
-  let overlaps = false
-  left.forEach((n) => {
-    if (right.includes(n)) overlaps = true
-  })
-  return overlaps
-}
-
-const fill = (nums: number[]): number[] => {
-  let start = nums[0]
-  const end = nums[1]
-  const filled = new Array<number>()
-  while (start <= end) {
-    filled.push(start)
-    start++
-  }
-  return filled
+  const [left, right] = pair
+  const [start1, end1] = left,
+    [start2, end2] = right
+  return !(end1 < start2 || end2 < start1)
 }
 
 const countOfFullyContainedPairs = lines
