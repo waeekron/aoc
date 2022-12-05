@@ -14,7 +14,7 @@ crates2d = transpose(crates2d).filter(
 
 const movedCrates = move(crates2d, moves)
 const topCrates: string = movedCrates.map(pickTopOne).join("")
-console.log("part1: ", topCrates)
+console.log("Solution:", topCrates)
 
 function transpose<Type>(matrix: Type[][]): Type[][] {
   const transposed = []
