@@ -1,13 +1,14 @@
 import { readFileSync } from "fs"
 
 const data = readFileSync("in6.txt", "utf-8").split("")
+const BUFFER_LEN = 14 // 4 for part 1, 14 for part 2
 let amountProcessed = 0
-for (const [i, char] of data.entries()) {
-  if (i === data.length - 3) break
-  const buffer = new Set([char, data[i + 1], data[i + 2], data[i + 3]])
-  if (buffer.size === 4) {
-    amountProcessed = i + 4
-    console.log(i + 4, char, buffer)
+for (const [i, _] of data.entries()) {
+  if (i === data.length - BUFFER_LEN - 1) break
+  const buffer = new Set([...data.slice(i, i + BUFFER_LEN)])
+  if (buffer.size === BUFFER_LEN) {
+    amountProcessed = i + BUFFER_LEN
+    console.log(buffer)
     break
   }
 }
