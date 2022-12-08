@@ -3,22 +3,12 @@ import { readFileSync } from "fs"
 const grid = readFileSync("in8.txt", "utf-8")
   .split("\n")
   .map((row) => row.split("").map((c) => parseInt(c)))
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const grid2: any[][] = grid.concat()
-console.log(grid2)
-let count = 0 //4 * grid.length - 4 //* (grid[0].length - 2)
 
-for (let y = 0; y < grid.length - 0; y++) {
-  for (let x = 0; x < grid[y].length - 0; x++) {
-    if (
-      x === 0 ||
-      y === 0 ||
-      x === grid[y].length - 1 ||
-      y === grid.length - 1
-    ) {
-      count++
-      continue
-    }
+let count = 0
+let maxScenicScore = 0
+
+for (let y = 0; y < grid.length; y++) {
+  for (let x = 0; x < grid[y].length; x++) {
     const treeHeight = grid[y][x]
     // horizontal
     const left = grid[y].slice(0, x)
@@ -29,38 +19,66 @@ for (let y = 0; y < grid.length - 0; y++) {
     for (let u = y - 1; u >= 0; u--) {
       up.push(grid[u][x])
     }
-    for (let d = y; d < grid.length; d++) {
+    for (let d = y + 1; d < grid.length; d++) {
       down.push(grid[d][x])
     }
-    // console.log(
-    //   { up },
-    //   treeHeight,
-    //   { down },
-    //   { up: isVisible(up, treeHeight) },
-    //   { down: isVisible(down, treeHeight) }
-    // )
-    // console.log()
-    // console.log(
-    //   { left },
-    //   treeHeight,
-    //   { right },
-    //   { left: isVisible(left, treeHeight) },
-    //   { right: isVisible(right, treeHeight) }
-    // )
-    // console.log("---------------------------------------------")
 
-    if (isVisible(left, treeHeight)) count++
-    if (isVisible(right, treeHeight)) count++
-    if (isVisible(up, treeHeight)) count++
-    if (isVisible(down, treeHeight)) count++
+    if (
+      isVisible(left, treeHeight) ||
+      isVisible(right, treeHeight) ||
+      isVisible(up, treeHeight) ||
+      isVisible(down, treeHeight)
+    ) {
+      count++
+    }
+    const score = scenicScore([left, right, up, down], treeHeight)
+    if (maxScenicScore < score) maxScenicScore = score
   }
 }
-function isVisible(arr: number[], num: number): boolean {
-  return arr.find((n, i) => {
-    return n >= num
-  })
-    ? false
-    : true
+
+function scenicScore(views: number[][], treeHeight: number): number {
+  const [left, right, up, down] = views
+  if (
+    left.length === 0 ||
+    right.length === 0 ||
+    up.length === 0 ||
+    down.length === 0
+  )
+    return 0
+  let scoreL = 0,
+    scoreR = 0,
+    scoreU = 0,
+    scoreD = 0
+  for (let i = left.length - 1; i >= 0; i--) {
+    scoreL++
+    if (left[i] >= treeHeight) break
+  }
+
+  for (let i = 0; i < right.length; i++) {
+    scoreR++
+    if (right[i] >= treeHeight) break
+  }
+  for (let i = 0; i < up.length; i++) {
+    scoreU++
+    if (up[i] >= treeHeight) break
+  }
+  for (let i = 0; i < down.length; i++) {
+    scoreD++
+    if (down[i] >= treeHeight) break
+  }
+  return scoreR * scoreD * scoreL * scoreU
 }
 
-console.log(count)
+function isVisible(arr: number[], num: number): boolean {
+  let visible = true
+  if (arr.length === 0) return visible
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] >= num) {
+      visible = false
+      break
+    }
+  }
+  return visible
+}
+
+console.log(count, maxScenicScore)
