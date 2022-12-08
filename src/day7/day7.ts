@@ -2,15 +2,11 @@ import { readFileSync } from "fs"
 
 const data = readFileSync("in7.txt", "utf-8").split("\n")
 const dirSizes = new Map<string, number>()
-const tree: {
-  name: string
-  sum: number
-  parent: string
-  children: string[]
-}[] = []
+const tree: { name: string; sum: number; parent: string }[] = []
 const path: string[] = []
-let dir = "/"
-let prevDir = "/"
+let dir = "/",
+  prevDir = "/"
+
 for (let i = 0; i < data.length; i++) {
   const pieces = data[i].split(" ")
   if (pieces[2] === "..") {
@@ -26,7 +22,6 @@ for (let i = 0; i < data.length; i++) {
       name: dir,
       parent: prevDir,
       sum: 0,
-      children: new Array<string>(),
     })
   }
 
@@ -45,7 +40,7 @@ for (let i = 0; i < data.length; i++) {
   }
 }
 function addSum(
-  tree: { parent: string; name: string; sum: number; children: string[] }[],
+  tree: { parent: string; name: string; sum: number }[],
   dir: string,
   sum: number
 ) {
@@ -72,7 +67,7 @@ console.log(total)
 total = 0
 totalSizes.forEach((val, _) => (total += val))
 const r: number[] = []
-for (const [k, v] of totalSizes.entries()) {
+for (const [_, v] of totalSizes.entries()) {
   if (v + (70000000 - (totalSizes.get("/") || 0)) >= 30000000) {
     r.push(v)
   }
