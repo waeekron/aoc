@@ -38,17 +38,17 @@ for (let y = 0; y < grid.length; y++) {
 
 function scenicScore(views: number[][], treeHeight: number): number {
   const [left, right, up, down] = views
-  if (
-    left.length === 0 ||
-    right.length === 0 ||
-    up.length === 0 ||
-    down.length === 0
-  )
-    return 0
-  let scoreL = 0,
-    scoreR = 0,
-    scoreU = 0,
-    scoreD = 0
+  // if (
+  //   left.length === 0 ||
+  //   right.length === 0 ||
+  //   up.length === 0 ||
+  //   down.length === 0
+  // )
+  //   return 0
+  let scoreL = left.length === 0 ? 1 : 0,
+    scoreR = right.length === 0 ? 1 : 0,
+    scoreU = up.length === 0 ? 1 : 0,
+    scoreD = down.length === 0 ? 1 : 0
   for (let i = left.length - 1; i >= 0; i--) {
     scoreL++
     if (left[i] >= treeHeight) break
