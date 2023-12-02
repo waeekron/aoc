@@ -23,140 +23,143 @@ type Set struct {
 
 func main() {
 
-	// how to read files with go?
-	// you can read files with os package
 	gameIDs := make([]int, 0)
 	cubeSets := make([]Draw, 0)
 	sets := make([]Set, 0)
 	games := make([][]Set, 0)
-	data, err := os.ReadFile("02/input.txt")
+	data, err := os.ReadFile("input.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
 	lines := strings.Split(string(data), "\n")
 
 	for _, line := range lines {
-		// game 1 : sets
 		parts := strings.Split(line, ":")
-		fmt.Println(len(parts))
-
 		id, err := strconv.Atoi(strings.Split(parts[0], " ")[1])
 		if err != nil {
 			log.Fatal(err)
 		}
 		gameIDs = append(gameIDs, id)
-
 		s := strings.Split(parts[1], ";")
-		// [1 blue 2 red, 3 green] game and its draws
 		for _, set := range s {
-			fmt.Println("SET", s)
-			// amountsAndColors each element is a draw of a set
 			amountAndColors := strings.Split(set, ",")
-			fmt.Println(amountAndColors, len(amountAndColors))
 			var d Draw
 			for _, v := range amountAndColors {
 				parts := strings.Split(v, " ")
-				//fmt.Println("THIS IS THE LENGTH OF PARTS", len(parts), parts)
-
 				color := parts[2]
 				a := parts[1]
-				fmt.Println(a, string(color), len(parts), parts, "sanikoira")
 				if amount, err := strconv.Atoi(string(a)); err == nil {
-					fmt.Println("in if statement")
-					d.color = string(color)
+					d.color = strings.TrimSuffix(string(color), "\r")
 					d.amount = amount
-
-					fmt.Println(color, amount, "kissa", d)
 					cubeSets = append(cubeSets, d)
 				}
-
-				fmt.Println("cubeSets", cubeSets)
-
 			}
-
 			sets = append(sets, Set{draws: cubeSets})
 			cubeSets = make([]Draw, 0)
 		}
 		games = append(games, sets)
-
 		sets = make([]Set, 0)
 	}
 	fmt.Println(len(gameIDs))
 	fmt.Println(len(sets))
 	fmt.Println("\n")
-	fmt.Println(len(games), games[0][0], "kakka")
 
 	/*
 		only 12 red cubes, 13 green cubes, and 14 blue cubes
 		game is not possible if one draw has more than above amount of certain color cube
 	*/
+
 	sum := 0
+	sum2 := 0
+
+	count := 0
 	for i, sets := range games {
+		var largestBlue, largestRed, largestGreen int
+		fmt.Println("Game:", sets)
 		possible := false
-		fmt.Println("Peli", i, "arvoilla", sets)
 		for _, set := range sets {
 			handIsPossible := true
 			for _, draw := range set.draws {
+
+				fmt.Println("Iterating over this set:", set)
 				a := draw.amount
-				fmt.Println()
 				switch color := draw.color; color {
 				case "red":
-					fmt.Println("red", draw)
 					if a > 12 {
-						fmt.Println("red", draw, "PASKAAAAAAA", i)
 						handIsPossible = false
+						fmt.Println("BREAKIN FROM THE FIRST LOOP")
 						break
 					}
 				case "blue":
 					if a > 14 {
-						if a == 15 {
-							println("VITTU JEE")
-						}
-						fmt.Println(a, "blue", draw, "PASKAAAAAAA", i)
-						fmt.Println("ASETETAAN handIsPossible=false vittu")
 						handIsPossible = false
-						fmt.Println("ASETETAAN handIsPossible=false vittu ja break", handIsPossible, possible)
 						break
 					}
 				case "green":
 
 					if a > 13 {
-						fmt.Println(a, "green", draw, "PASKAAA", i)
 						handIsPossible = false
 						break
 					}
 				default:
-
+					// do nothing
 				}
-				//fmt.Printf("%v | ", draw)
 			}
-			fmt.Println("AFTER VITUN SAATANA BREAK", handIsPossible)
-			fmt.Println("BEFORE HANDISPOSSIBLE IF CHECK", handIsPossible, possible)
+			fmt.Println("????????????????????????????????????")
+			for _, draw := range set.draws {
+				a := draw.amount
+				count++
+
+				fmt.Println("Iterating over this set:", set)
+				fmt.Println(draw, largestGreen, largestBlue, largestRed, "MIKÄ VITTU")
+				if i == 2 {
+					fmt.Println("okei meidän pitäisi nyt ajaa kyseisen arvon yli")
+				}
+				fmt.Println(draw.color == "green", draw.color == "red", draw.color == "blue")
+				switch color := draw.color; color {
+				case "red":
+
+					if a > largestRed {
+						largestRed = a
+					}
+
+				case "blue":
+					if a > largestBlue {
+						largestBlue = a
+					}
+
+				case "green":
+					if a > largestGreen {
+						largestGreen = a
+					}
+
+				default:
+					// do nothing
+					println("IN DEFAULT")
+				}
+			}
 			if handIsPossible {
 				possible = true
 			} else {
-				fmt.Println("In not possible", handIsPossible, possible)
 				possible = false
 				break
 			}
-
 			fmt.Println("\n\n")
 		}
+		product := largestRed * largestBlue * largestGreen
+
+		println(product, "tulo", largestGreen, largestBlue, largestRed)
+		largestGreen, largestRed, largestBlue = 0, 0, 0
+		sum2 += product
 		if possible {
-			fmt.Println("adding", i+1)
 			sum += i + 1
 			possible = false
 		}
 		fmt.Println("------------------------")
 	}
-	fmt.Println(sum)
-	//for i, game := range sets {
-	//	fmt.Println(i)
+	fmt.Printf("part 1: %v\n", sum)
+	fmt.Printf("part 2: %v\n", sum2)
+	fmt.Print("MITÄ HELVETTIÄ")
 
-	//	for _, g := range game.draws {
-	//		g = g
-	//	}
-	//	fmt.Println(len(game.draws))
-	//	fmt.Println()
-	//}
+	fmt.Println("count", count)
 }
