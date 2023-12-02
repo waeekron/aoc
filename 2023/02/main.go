@@ -79,32 +79,32 @@ func main() {
 		possible := false
 		for _, set := range sets {
 			handIsPossible := true
-			for _, draw := range set.draws {
+			//for _, draw := range set.draws {
 
-				fmt.Println("Iterating over this set:", set)
-				a := draw.amount
-				switch color := draw.color; color {
-				case "red":
-					if a > 12 {
-						handIsPossible = false
-						fmt.Println("BREAKIN FROM THE FIRST LOOP")
-						break
-					}
-				case "blue":
-					if a > 14 {
-						handIsPossible = false
-						break
-					}
-				case "green":
+			//	fmt.Println("Iterating over this set:", set)
+			//	a := draw.amount
+			//	switch color := draw.color; color {
+			//	case "red":
+			//		if a > 12 {
+			//			handIsPossible = false
+			//			fmt.Println("BREAKIN FROM THE FIRST LOOP")
+			//			break
+			//		}
+			//	case "blue":
+			//		if a > 14 {
+			//			handIsPossible = false
+			//			break
+			//		}
+			//	case "green":
 
-					if a > 13 {
-						handIsPossible = false
-						break
-					}
-				default:
-					// do nothing
-				}
-			}
+			//		if a > 13 {
+			//			handIsPossible = false
+			//			break
+			//		}
+			//	default:
+			//		// do nothing
+			//	}
+			//}
 			fmt.Println("????????????????????????????????????")
 			for _, draw := range set.draws {
 				a := draw.amount
