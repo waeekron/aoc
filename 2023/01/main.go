@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	data, err := os.ReadFile("01/input.txt")
+	data, err := os.ReadFile("input.txt")
 
 	if err != nil {
 		panic(err)
@@ -19,10 +19,7 @@ func main() {
 	sum := 0
 	s := 0
 	for _, v := range lines {
-		//fmt.Printf("index %d and value %s", i, v)
-		//replace all typed numbers with numbers
 		leftVal := left(v)
-		fmt.Println(leftVal, "left value")
 		rightVal := right(v)
 
 		if leftVal != 0 && rightVal != 0 {
@@ -39,22 +36,17 @@ func main() {
 		}
 
 		if rightVal == 0 {
-
 			tmp := strconv.Itoa(leftVal) + strconv.Itoa(leftVal)
 			tmp2, _ := strconv.Atoi(tmp)
 			s += tmp2
 		}
 
-		fmt.Println(rightVal, "right value")
 		nums := make([]int, 0)
 		for _, char := range v {
 			if i, err := strconv.Atoi(string(char)); err == nil {
-				//fmt.Println("converting", i)
 				nums = append(nums, i)
 			}
 		}
-
-		//numbers := parseString(v)
 
 		if len(nums) == 1 {
 			s := strconv.Itoa(nums[0])
@@ -64,7 +56,6 @@ func main() {
 		}
 
 		if len(nums) > 1 {
-			fmt.Println("Adding", nums)
 			s := strconv.Itoa(nums[0])
 			s2 := strconv.Itoa(nums[len(nums)-1])
 			s += s2
@@ -74,15 +65,12 @@ func main() {
 	}
 
 	fmt.Println(sum, s)
-
-	fmt.Println(strings.ReplaceAll("1terthreesevenine3", "seven", "7"))
 }
 
 func left(s string) int {
 	occurances := []string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 	nums := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}
 	m := map[string]int{"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9}
-	fmt.Println("RIVI", s)
 	for idx := 0; idx < len(s); idx++ {
 		for _, v := range nums {
 			if strings.Contains(s[:idx], v) {
@@ -103,7 +91,6 @@ func right(s string) int {
 	occurances := []string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 	nums := []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}
 	m := map[string]int{"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9}
-	fmt.Println("RIVI", s)
 	for idx := len(s) - 1; idx > 0; idx-- {
 		for _, v := range nums {
 			if strings.Contains(s[idx:], v) {
