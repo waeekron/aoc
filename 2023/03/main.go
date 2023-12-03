@@ -32,13 +32,10 @@ func main() {
 	// find the numbers and their indexes, then check there is a symbol which touches
 	// at least one of the number's indices
 	sum := 0
-	fmt.Println("BEFORE LOOPIN")
 	for i := 0; i < len(schematic); i++ {
 		fmt.Println("iterating over", string(schematic[i]), i)
 		for j := 0; j < len(schematic[i]); j++ {
-			if j == 0 {
-				//fmt.Println("SECOND LOOP STARTS AN ITERATION")
-			}
+
 			var num bytes.Buffer
 			var num_indices []int
 			s := string(schematic[i][j])
@@ -51,7 +48,6 @@ func main() {
 			} else {
 				// find the start and end of the number
 				a := schematic[i]
-				//fmt.Println("first number found starting to look for others", b, "from j index", j, string(a))
 				// the number and its index
 				num_indices = append(num_indices, j)
 				num.WriteByte(schematic[i][j])
@@ -251,19 +247,12 @@ func main() {
 					}
 					if y > 0 && y < len(schematic)-1 && x >= 0 && x < w {
 						// can check every direction
-						fmt.Println("IN ALL CHECK", y, x)
-						if y == 120 {
-							fmt.Println("CHECKPOINT")
-						}
-						// left
-						fmt.Println("in correct check with values ", y, x)
 						if x-1 > 0 && isSymbol(schematic[y][x-1]) {
 							add(&sum, n)
 							break
 						}
 						// right
 						if x+1 < w && isSymbol(schematic[y][x+1]) {
-							fmt.Println("interesting case")
 							add(&sum, n)
 							break
 						}
@@ -300,22 +289,15 @@ func main() {
 					}
 
 				}
-				fmt.Println(num.String(), num_indices, "num as string and num indeces")
 
 			}
 
 		}
 	}
-	fmt.Println(sum, "sum is")
-	fmt.Println(gears)
-	//sum2 := 0
-	//gears := make(map[Coordinate]int[])
-	//for _, c := range asterisks {
+	fmt.Println(sum)
 
-	//}
 	sum2 := 0
-	for c, nums := range gears {
-		fmt.Println(c, nums)
+	for _, nums := range gears {
 		if len(nums) == 2 {
 			n1, n2 := nums[0], nums[1]
 			i1, _ := strconv.Atoi(n1.String())
@@ -338,7 +320,6 @@ func checkAdjecant(a [][]byte, y int, x int) (Coordinate, error) {
 	return Coordinate{}, errors.New("No asterisk")
 }
 func add(sum *int, num int) {
-	fmt.Println("adding", num)
 	*sum += num
 }
 func isSymbol(b byte) bool {
