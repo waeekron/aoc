@@ -22,6 +22,7 @@ func (t Ticket) String() string {
 }
 
 func main() {
+	ticketCount := 0
 	sumOfPoints := 0.0
 	tickets := make([]Ticket, 0)
 	f, err := os.Open("input.txt")
@@ -32,6 +33,7 @@ func main() {
 
 	sc := bufio.NewScanner(f)
 	idx := 1
+	// parse input
 	for sc.Scan() {
 		nums := strings.Split(strings.Split(sc.Text(), ":")[1], "|")
 		//fmt.Println(nums)
@@ -60,10 +62,12 @@ func main() {
 		tickets = append(tickets, t)
 	}
 
-	//fmt.Println(tickets, sumOfPoints)
-
+	// compute parsed tickets
+	idToCount := make(map[int]int)
+	// part 1
 	for _, t := range tickets {
 		c := countMatches(t.winning_numbers, t.scratched_numbers)
+		// part 1
 		if c == 0 {
 			continue
 		}
@@ -72,10 +76,44 @@ func main() {
 		} else {
 			sumOfPoints += math.Pow(2.0, float64(c-1))
 		}
+		idToCount[t.id] = c
 
 	}
 	fmt.Printf("Part 1: %g\n", sumOfPoints)
 
+	// part 2
+	end := len(tickets)
+	for i, t := range tickets {
+		subwidth := 0
+		if i+idToCount[t.id] > end {
+			subwidth = int(math.Abs(float64(end) - float64(i+idToCount[t.id])))
+		} else {
+			subwidth = i + idToCount[t.id]
+		}
+		//subwidth :=i+idToCount[t.id]
+		c := countTickets(tickets[i+1:subwidth+1], idToCount, end)
+		ticketCount += c
+	}
+
+	fmt.Printf("Part 2: %d\n", ticketCount)
+}
+
+func countTickets(tickets []Ticket, idToCount map[int]int, end int) int {
+
+	if len(tickets) == 0 {
+		return 1
+	}
+	c := 1
+	for i, t := range tickets {
+		subwidth := 0
+		if t.id > end {
+			subwidth = int(math.Abs(float64(end) - float64(i+idToCount[t.id])))
+		} else {
+			subwidth = i + idToCount[t.id]
+		}
+		c += countTickets(tickets[i+1:subwidth+1], idToCount, end)
+	}
+	return c
 }
 
 // Counts how many elements of a1 are included in a2 and returns count
