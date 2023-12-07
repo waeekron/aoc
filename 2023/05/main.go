@@ -19,7 +19,6 @@ func main() {
 	fmt.Println(len(seeds))
 	s := convToInts(seeds)
 	lowestLocation := int64(math.MaxInt64)
-	s = parseSeeds(s)
 	fmt.Println(s)
 	for _, seed := range s {
 		fmt.Println("Seed", seed)
