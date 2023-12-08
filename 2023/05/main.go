@@ -3,134 +3,89 @@ package main
 import (
 	"fmt"
 	"log"
-	"math"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
+type Range struct {
+	start, end int
+}
+
+type Mapping struct {
+	source, destination Range
+	rangeLength         int
+}
+
 func main() {
+	t := time.Now()
 	dat, err := os.ReadFile("input.txt")
 	if err != nil {
 		log.Fatal("Something went wrong")
 	}
-	lines := strings.Split(string(dat), "\r\n\r\n")
-	seeds := strings.Split(strings.TrimSpace(strings.Split(lines[0], ":")[1]), " ")
-	fmt.Println(len(seeds))
-	s := convToInts(seeds)
-	lowestLocation := int64(math.MaxInt64)
-	fmt.Println(s)
-	for _, seed := range s {
-		fmt.Println("Seed", seed)
-		source := seed
-		for _, l := range lines[1:] {
+	parts := strings.Split(string(dat), "\r\n\r\n")
 
-			parts := strings.Split(l, "\n")[1:]
-			for _, p := range parts {
-				m := convToInts(strings.Split(p, " "))
-				d, s, rl := m[0], m[1], m[2]
+	maps := collectMaps(parts[1:])
+	fmt.Println(maps[0][0].rangeLength)
+	seeds := strings.Split(strings.TrimSpace(strings.Split(parts[0], ":")[1]), " ")
 
-				//dEnd := d + rl
-				sEnd := s + rl
-				/*
-					50 52
-					51 53
-					52 54
-					53 55
-					54 56
-					55 57
-						curSource = 55
-						d	s	r
-						52, 50 ,48
+	seedRanges := collectSeedRanges(seeds)
+	for _, sr := range seedRanges {
+		// iterate over all the seeds in seedRange
 
-						dEnd = 52 48 = 100
-						sEnd = 98
+		for sr.start < sr.end {
 
-							50		55			98
-						jos  s <= curSource < sEnd
-							// asetaan curSource dest arvo joka saadaan
-							curSource = 55 - 50 + 52
-
-				*/
-
-				if source >= s && source < sEnd {
-					source = source - s + d
-					fmt.Println("new source", source)
-					break
-				} else {
-					fmt.Println("source", source)
-				}
-
+			seed := sr.start
+			fmt.Println("seed-end", seed, sr.end)
+			// iterate over all the maps for a seed
+			for range maps {
+				//fmt.Println("fromTo", fromTo)
 			}
-
-		}
-		if source < lowestLocation {
-			lowestLocation = source
+			sr.start++
 		}
 	}
-	fmt.Println(lowestLocation, "location")
+
+	fmt.Println("Code took", time.Since(t), "to run")
 }
 
-// [10 15 2] -> [[] , []]
-func collectRanges(a []int64) []int64 {
-	fmt.Println(a, "miisu")
-	return a
-}
+func collectMaps(m []string) [][]Mapping {
 
-func parseSeeds(s []int64) [][]int64 {
-	c := make([][]int64, 0)
-	for i := 0; i < len(s); i += 2 {
-		end := s[i+1] + s[i]
-		start := s[i]
-		c = append(c, []int64{start, end})
-	}
-	return c
-}
+	var maps [][]Mapping
+	for _, mapping := range m {
 
-// add all k-v pairs from m2 to m1
-func addMap(m1, m2 map[int64]int64) map[int64]int64 {
-	for k, v := range m2 {
-		m1[k] = v
-	}
-	return m1
-}
-func mapValues(a []int64) map[int64]int64 {
-	fmt.Println("in mapvalues")
-	var m map[int64]int64 = make(map[int64]int64, a[2])
-	destStart := a[0]
-	sourceStart := a[1]
-	rl := a[2]
+		mapping := strings.Split(mapping, ":")
+		mapping = strings.Split(mapping[1], "\n")
 
-	var d []int64
-	var s []int64
-	end := destStart + rl
-	for destStart < end {
-		d = append(d, destStart)
-		destStart++
-	}
-	end = sourceStart + rl
-	for sourceStart < end {
-		s = append(s, sourceStart)
-		sourceStart++
-	}
-	for i, el := range s {
-		if i > len(d)-1 {
+		var tmp []Mapping
+		for _, v := range mapping[1:] {
+			p := strings.Split(v, " ")
+			destinationStart, sourceStart, rangeLen := p[0], p[1], p[2]
+			destStart, _ := strconv.Atoi(strings.TrimSpace(destinationStart))
+			sourStart, _ := strconv.Atoi(strings.TrimSpace(sourceStart))
+			rlen, _ := strconv.Atoi(strings.TrimSpace(rangeLen))
+			sourceRange := Range{start: sourStart, end: sourStart + rlen}
+			destRange := Range{start: destStart, end: destStart + rlen}
 
-			m[el] = el
-		} else {
-			m[el] = d[i]
+			mappingFromTo := Mapping{source: sourceRange, destination: destRange, rangeLength: rlen}
+			tmp = append(tmp, mappingFromTo)
 		}
+		maps = append(maps, tmp)
 	}
-	return m
+	return maps
 }
 
-func convToInts(s []string) []int64 {
-	var conv []int64
-	for _, e := range s {
-		e = strings.TrimSpace(e)
-		if i, err := strconv.ParseInt(e, 10, 64); err == nil {
-			conv = append(conv, i)
-		}
+func collectSeedRanges(seeds []string) []Range {
+
+	var ranges []Range
+	for i := 0; i < len(seeds); i += 2 {
+		s, e := seeds[i], seeds[i+1]
+		start, _ := strconv.Atoi(s)
+		end, _ := strconv.Atoi(e)
+		end += start
+		r := Range{start: start, end: end}
+		ranges = append(ranges, r)
 	}
-	return conv
+
+	return ranges
 }
