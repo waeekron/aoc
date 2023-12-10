@@ -47,27 +47,8 @@ func part2(parts []string) {
 	if err != nil {
 		panic(err)
 	}
-	count := 1
-
-	for i := 0; i < len(times); i++ {
-		t := times[i]
-		d := distances[i]
-		waysToWin := 0
-
-		boat := new(Boat)
-		tick := 0
-		for boat.speed < t {
-			boat.holdButton(tick)
-			if boat.travel(t-tick) > d {
-				waysToWin++
-			}
-
-			tick++
-
-		}
-		count *= waysToWin
-	}
-	fmt.Println("Count of ways to win", count)
+	fmt.Print("Part 2\t")
+	race(times, distances)
 }
 
 // [1, 2, 4] -> [124]
@@ -82,12 +63,7 @@ func combine(a []string) ([]int, error) {
 	}
 	return []int{num}, nil
 }
-func part1(parts []string) {
-
-	t := strings.Split(strings.TrimSpace(strings.Split(parts[0], ":")[1]), " ")
-	d := strings.Split(strings.TrimSpace(strings.Split(parts[1], ":")[1]), " ")
-	times := convStr(t)
-	distances := convStr(d)
+func race(times, distances []int) {
 	count := 1
 
 	for i := 0; i < len(times); i++ {
@@ -109,6 +85,15 @@ func part1(parts []string) {
 		count *= waysToWin
 	}
 	fmt.Println("Count of ways to win", count)
+}
+func part1(parts []string) {
+
+	t := strings.Split(strings.TrimSpace(strings.Split(parts[0], ":")[1]), " ")
+	d := strings.Split(strings.TrimSpace(strings.Split(parts[1], ":")[1]), " ")
+	times := convStr(t)
+	distances := convStr(d)
+	fmt.Print("Part 1\t")
+	race(times, distances)
 }
 
 func convStr(s []string) []int {
